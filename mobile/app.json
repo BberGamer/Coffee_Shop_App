@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Moon Coffee",
+    "slug": "moon-coffee",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "package": "com.mooncoffee.app"
+    },
+    "plugins": [
+      "expo-asset"
+    ]
+  }
+}
