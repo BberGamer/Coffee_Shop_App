@@ -1,80 +1,62 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
-import ScreenContainer from '../components/ScreenContainer';
-import PrimaryButton from '../components/PrimaryButton';
-import { colors } from '../theme/colors';
+import { StatusBar } from 'expo-status-bar';
 
 export default function WelcomeScreen({ navigation }: any) {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.replace('Onboarding');
+    }, 1800);
+
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
   return (
-    <ScreenContainer scroll={false} style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>☕</Text>
-        <Text style={styles.title}>Moon Coffee</Text>
-        <Text style={styles.subtitle}>EST. 2024</Text>
-      </View>
-
-      <ImageBackground
-        source={{ uri: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=80' }}
-        style={styles.hero}
-        imageStyle={styles.heroImage}
-      >
-        <View style={styles.overlay}>
-          <Text style={styles.heroTitle}>Let’s get started!</Text>
-          <Text style={styles.heroText}>
-            Sign in to access our menu, promotions and more.
-          </Text>
+    <ImageBackground
+      source={{
+        uri: 'https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=1200&q=80'
+      }}
+      style={styles.background}
+      imageStyle={styles.backgroundImage}
+    >
+      <StatusBar style="light" />
+      <View style={styles.overlay}>
+        <View style={styles.brandWrap}>
+          <Text style={styles.brand}>MOON COFFEE</Text>
+          <Text style={styles.caption}>Slow brews. Clean design. Better mornings.</Text>
         </View>
-      </ImageBackground>
-
-      <PrimaryButton title="Start" onPress={() => navigation.navigate('Login')} />
-    </ScreenContainer>
+      </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    justifyContent: 'space-between'
+    backgroundColor: '#0f1f24'
   },
-  header: {
-    marginTop: 20,
-    alignItems: 'center'
-  },
-  logo: {
-    fontSize: 40
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: '800',
-    color: colors.text,
-    marginTop: 10
-  },
-  subtitle: {
-    color: colors.textSoft,
-    marginTop: 4
-  },
-  hero: {
-    flex: 1,
-    width: '100%',
-    marginVertical: 24,
-    justifyContent: 'flex-end'
-  },
-  heroImage: {
-    borderRadius: 28
+  backgroundImage: {
+    opacity: 0.96
   },
   overlay: {
-    padding: 24,
-    backgroundColor: 'rgba(0,0,0,0.18)',
-    borderRadius: 28
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 28,
+    paddingBottom: 54,
+    backgroundColor: 'rgba(6, 20, 26, 0.22)'
   },
-  heroTitle: {
-    color: '#fff',
-    fontSize: 28,
-    fontWeight: '800'
+  brandWrap: {
+    alignItems: 'center'
   },
-  heroText: {
-    color: '#fff',
-    marginTop: 8,
-    lineHeight: 22
+  brand: {
+    color: '#ffffff',
+    fontSize: 34,
+    fontWeight: '800',
+    letterSpacing: 1.5
+  },
+  caption: {
+    marginTop: 10,
+    color: 'rgba(255,255,255,0.84)',
+    fontSize: 15
   }
 });
