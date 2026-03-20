@@ -74,8 +74,32 @@ const getProfile = async (req, res) => {
   });
 };
 
+const updateProfile = async (req, res, next) => {
+  try {
+    const { name, address, avatar } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: 'Name is required.' });
+    }
+
+    req.user.name = name.trim();
+    req.user.address = typeof address === 'string' ? address.trim() : '';
+    req.user.avatar = typeof avatar === 'string' ? avatar.trim() : '';
+
+    const updatedUser = await req.user.save();
+
+    res.json({
+      message: 'Profile updated successfully',
+      user: sanitizeUser(updatedUser)
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   register,
   login,
-  getProfile
+  getProfile,
+  updateProfile
 };

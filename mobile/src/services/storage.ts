@@ -10,6 +10,9 @@ export const storage = {
       [USER_KEY, user]
     ]);
   },
+  async setUser(user: string) {
+    await AsyncStorage.setItem(USER_KEY, user);
+  },
   async clearAuth() {
     await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
   },

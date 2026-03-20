@@ -8,6 +8,7 @@ type AuthContextType = {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
+  updateProfile: (payload: { name: string; address: string; avatar: string }) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -56,6 +57,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
+  const updateProfile = async (payload: { name: string; address: string; avatar: string }) => {
+    const response = await api.put('/auth/me', payload);
+    await storage.setUser(JSON.stringify(response.data.user));
+    setUser(response.data.user);
+  };
+
   const value = useMemo(
     () => ({
       user,
@@ -70,6 +77,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       register: async (name: string, email: string, password: string) => {
         try {
           await register(name, email, password);
+        } catch (error) {
+          throw new Error(parseError(error));
+        }
+      },
+      updateProfile: async (payload: { name: string; address: string; avatar: string }) => {
+        try {
+          await updateProfile(payload);
         } catch (error) {
           throw new Error(parseError(error));
         }

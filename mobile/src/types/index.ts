@@ -5,6 +5,7 @@ export type User = {
   role: 'customer' | 'admin';
   avatar?: string;
   address?: string;
+  createdAt?: string;
 };
 
 export type Product = {
