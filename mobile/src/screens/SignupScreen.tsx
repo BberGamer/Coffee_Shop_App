@@ -8,10 +8,10 @@ import { colors } from '../theme/colors';
 
 export default function SignupScreen({ navigation }: any) {
   const { register } = useAuth();
-  const [name, setName] = useState('Nguyen Van A');
-  const [email, setEmail] = useState('user@example.com');
-  const [password, setPassword] = useState('123456');
-  const [confirmPassword, setConfirmPassword] = useState('123456');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const onRegister = async () => {

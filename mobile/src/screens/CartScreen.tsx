@@ -4,6 +4,7 @@ import ScreenContainer from '../components/ScreenContainer';
 import PrimaryButton from '../components/PrimaryButton';
 import { useCart } from '../context/CartContext';
 import { colors } from '../theme/colors';
+import { getSizePrice } from '../utils/pricing';
 
 export default function CartScreen({ navigation }: any) {
   const { items, subtotal, updateQuantity, removeItem } = useCart();
@@ -20,29 +21,34 @@ export default function CartScreen({ navigation }: any) {
           <Text style={styles.emptyText}>Your cart is empty.</Text>
         </View>
       ) : (
-        items.map((item) => (
-          <View key={`${item.product._id}-${item.size}`} style={styles.card}>
-            <Image source={{ uri: item.product.image }} style={styles.image} />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.itemName}>{item.product.name}</Text>
-              <Text style={styles.itemMeta}>Size: {item.size}</Text>
-              <Text style={styles.itemPrice}>${item.product.price.toFixed(2)}</Text>
+        items.map((item) => {
+          const unitPrice = getSizePrice(item.product.price, item.size);
 
-              <View style={styles.qtyRow}>
-                <Pressable style={styles.qtyButton} onPress={() => updateQuantity(item.product._id, item.size, item.quantity - 1)}>
-                  <Text>-</Text>
-                </Pressable>
-                <Text style={styles.qtyValue}>{item.quantity}</Text>
-                <Pressable style={styles.qtyButton} onPress={() => updateQuantity(item.product._id, item.size, item.quantity + 1)}>
-                  <Text>+</Text>
-                </Pressable>
+          return (
+            <View key={`${item.product._id}-${item.size}`} style={styles.card}>
+              <Image source={{ uri: item.product.image }} style={styles.image} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.itemName}>{item.product.name}</Text>
+                <Text style={styles.itemMeta}>Size: {item.size}</Text>
+                <Text style={styles.itemPrice}>${unitPrice.toFixed(2)}</Text>
+                <Text style={styles.itemMeta}>Line total: ${(unitPrice * item.quantity).toFixed(2)}</Text>
+
+                <View style={styles.qtyRow}>
+                  <Pressable style={styles.qtyButton} onPress={() => updateQuantity(item.product._id, item.size, item.quantity - 1)}>
+                    <Text>-</Text>
+                  </Pressable>
+                  <Text style={styles.qtyValue}>{item.quantity}</Text>
+                  <Pressable style={styles.qtyButton} onPress={() => updateQuantity(item.product._id, item.size, item.quantity + 1)}>
+                    <Text>+</Text>
+                  </Pressable>
+                </View>
               </View>
+              <Pressable onPress={() => removeItem(item.product._id, item.size)}>
+                <Text style={styles.deleteText}>Remove</Text>
+              </Pressable>
             </View>
-            <Pressable onPress={() => removeItem(item.product._id, item.size)}>
-              <Text style={styles.deleteText}>Remove</Text>
-            </Pressable>
-          </View>
-        ))
+          );
+        })
       )}
 
       <View style={styles.summary}>

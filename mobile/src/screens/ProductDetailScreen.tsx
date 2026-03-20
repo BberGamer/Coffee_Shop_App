@@ -14,6 +14,7 @@ import { api } from '../services/api';
 import { Product } from '../types';
 import { colors } from '../theme/colors';
 import { useCart } from '../context/CartContext';
+import { getSizePrice, getSizePriceLabel } from '../utils/pricing';
 
 export default function ProductDetailScreen({ route, navigation }: any) {
   const { productId } = route.params;
@@ -49,15 +50,21 @@ export default function ProductDetailScreen({ route, navigation }: any) {
     );
   }
 
+  const selectedPrice = getSizePrice(product.price, selectedSize);
+  const totalPrice = selectedPrice * quantity;
+
   return (
     <ScreenContainer>
       <Image source={{ uri: product.image }} style={styles.image} />
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>{product.name}</Text>
-          <Text style={styles.meta}>{product.category} • Origin: {product.origin}</Text>
+          <Text style={styles.meta}>{product.category} - Origin: {product.origin}</Text>
         </View>
-        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+        <View style={styles.priceWrap}>
+          <Text style={styles.price}>{getSizePriceLabel(product.price, selectedSize)}</Text>
+          <Text style={styles.priceNote}>Size {selectedSize}</Text>
+        </View>
       </View>
 
       <Text style={styles.sectionLabel}>Description</Text>
@@ -71,7 +78,9 @@ export default function ProductDetailScreen({ route, navigation }: any) {
             style={[styles.sizeButton, selectedSize === size ? styles.sizeButtonActive : null]}
             onPress={() => setSelectedSize(size)}
           >
-            <Text style={[styles.sizeText, selectedSize === size ? styles.sizeTextActive : null]}>{size}</Text>
+            <Text style={[styles.sizeText, selectedSize === size ? styles.sizeTextActive : null]}>
+              {size} - {getSizePriceLabel(product.price, size)}
+            </Text>
           </Pressable>
         ))}
       </View>
@@ -88,7 +97,7 @@ export default function ProductDetailScreen({ route, navigation }: any) {
       </View>
 
       <PrimaryButton
-        title="Add to Cart"
+        title={`Add to Cart - $${totalPrice.toFixed(2)}`}
         onPress={() => {
           addToCart(product, quantity, selectedSize);
           Alert.alert('Success', 'Added to cart');
@@ -126,10 +135,17 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: colors.textSoft
   },
+  priceWrap: {
+    alignItems: 'flex-end'
+  },
   price: {
     color: colors.primaryDark,
     fontWeight: '800',
     fontSize: 28
+  },
+  priceNote: {
+    marginTop: 4,
+    color: colors.textSoft
   },
   sectionLabel: {
     marginTop: 20,

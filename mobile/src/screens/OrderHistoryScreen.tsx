@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import ScreenContainer from '../components/ScreenContainer';
 import { api } from '../services/api';
 import { Order } from '../types';
@@ -30,9 +31,11 @@ export default function OrderHistoryScreen() {
     }
   };
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadOrders();
+    }, [])
+  );
 
   return (
     <ScreenContainer>

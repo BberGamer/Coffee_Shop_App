@@ -8,8 +8,8 @@ import { colors } from '../theme/colors';
 
 export default function LoginScreen({ navigation }: any) {
   const { login } = useAuth();
-  const [email, setEmail] = useState('admin@mooncoffee.vn');
-  const [password, setPassword] = useState('123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const onLogin = async () => {

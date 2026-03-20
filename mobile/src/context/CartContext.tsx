@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { CartItem, Product } from '../types';
+import { getSizePrice } from '../utils/pricing';
 
 type CartContextType = {
   items: CartItem[];
@@ -59,7 +60,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const clearCart = () => setItems([]);
 
   const subtotal = useMemo(
-    () => items.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
+    () =>
+      items.reduce(
+        (sum, item) => sum + getSizePrice(item.product.price, item.size) * item.quantity,
+        0
+      ),
     [items]
   );
 

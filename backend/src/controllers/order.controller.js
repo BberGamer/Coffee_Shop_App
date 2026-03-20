@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
+const { getSizePrice } = require('../utils/pricing');
 
 const createOrder = async (req, res, next) => {
   try {
@@ -40,8 +41,8 @@ const createOrder = async (req, res, next) => {
         product: product._id,
         name: product.name,
         image: product.image,
-        price: product.price,
-        size: item.size || 'M',
+        price: getSizePrice(product.price, item.size || 'S'),
+        size: item.size || 'S',
         quantity: Number(item.quantity || 1)
       });
     }
