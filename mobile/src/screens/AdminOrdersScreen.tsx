@@ -13,8 +13,10 @@ export default function AdminOrdersScreen() {
   const loadOrders = async () => {
     try {
       const response = await api.get('/orders');
-      setOrders(response.data.items);
+      const items = Array.isArray(response?.data?.items) ? response.data.items : [];
+      setOrders(items);
     } catch (error: any) {
+      setOrders([]);
       Alert.alert('Error', error?.response?.data?.message || 'Failed to load orders');
     }
   };

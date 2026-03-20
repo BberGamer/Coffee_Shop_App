@@ -2,6 +2,7 @@ import React from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { colors } from '../theme/colors';
 
@@ -22,6 +23,17 @@ import AdminOrdersScreen from '../screens/AdminOrdersScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const tabIcons = {
+  HomeTab: 'home-outline',
+  CartTab: 'cart-outline',
+  OrdersTab: 'receipt-outline',
+  ProfileTab: 'person-outline',
+  DashboardTab: 'grid-outline',
+  ProductsTab: 'cafe-outline',
+  OrdersAdminTab: 'list-outline',
+  AdminProfileTab: 'person-outline'
+} as const;
+
 function TabLabel({ name, focused }: { name: string; focused: boolean }) {
   return (
     <Text style={{ color: focused ? colors.primary : colors.textSoft, fontSize: 12, fontWeight: '600' }}>
@@ -30,37 +42,56 @@ function TabLabel({ name, focused }: { name: string; focused: boolean }) {
   );
 }
 
+function buildTabScreenOptions(routeName: keyof typeof tabIcons) {
+  return {
+    headerShown: false,
+    tabBarActiveTintColor: colors.primary,
+    tabBarInactiveTintColor: colors.textSoft,
+    tabBarStyle: {
+      backgroundColor: '#fff',
+      borderTopColor: colors.border,
+      height: 64
+    },
+    tabBarIcon: ({ color, size }: { color: string; size: number }) => (
+      <Ionicons name={tabIcons[routeName]} size={size} color={color} />
+    )
+  };
+}
+
 function CustomerTabs() {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopColor: colors.border,
-          height: 64
-        }
-      }}
-    >
+    <Tab.Navigator>
       <Tab.Screen
         name="HomeTab"
         component={HomeScreen}
-        options={{ tabBarLabel: ({ focused }) => <TabLabel name="Home" focused={focused} /> }}
+        options={{
+          ...buildTabScreenOptions('HomeTab'),
+          tabBarLabel: ({ focused }) => <TabLabel name="Home" focused={focused} />
+        }}
       />
       <Tab.Screen
         name="CartTab"
         component={CartScreen}
-        options={{ tabBarLabel: ({ focused }) => <TabLabel name="Cart" focused={focused} /> }}
+        options={{
+          ...buildTabScreenOptions('CartTab'),
+          tabBarLabel: ({ focused }) => <TabLabel name="Cart" focused={focused} />
+        }}
       />
       <Tab.Screen
         name="OrdersTab"
         component={OrderHistoryScreen}
-        options={{ tabBarLabel: ({ focused }) => <TabLabel name="Orders" focused={focused} /> }}
+        options={{
+          ...buildTabScreenOptions('OrdersTab'),
+          tabBarLabel: ({ focused }) => <TabLabel name="Orders" focused={focused} />
+        }}
       />
       <Tab.Screen
         name="ProfileTab"
         component={ProfileScreen}
-        options={{ tabBarLabel: ({ focused }) => <TabLabel name="Profile" focused={focused} /> }}
+        options={{
+          ...buildTabScreenOptions('ProfileTab'),
+          tabBarLabel: ({ focused }) => <TabLabel name="Profile" focused={focused} />
+        }}
       />
     </Tab.Navigator>
   );
@@ -68,35 +99,38 @@ function CustomerTabs() {
 
 function AdminTabs() {
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#fff',
-          borderTopColor: colors.border,
-          height: 64
-        }
-      }}
-    >
+    <Tab.Navigator>
       <Tab.Screen
         name="DashboardTab"
         component={AdminDashboardScreen}
-        options={{ tabBarLabel: ({ focused }) => <TabLabel name="Dashboard" focused={focused} /> }}
+        options={{
+          ...buildTabScreenOptions('DashboardTab'),
+          tabBarLabel: ({ focused }) => <TabLabel name="Dashboard" focused={focused} />
+        }}
       />
       <Tab.Screen
         name="ProductsTab"
         component={AdminProductsScreen}
-        options={{ tabBarLabel: ({ focused }) => <TabLabel name="Products" focused={focused} /> }}
+        options={{
+          ...buildTabScreenOptions('ProductsTab'),
+          tabBarLabel: ({ focused }) => <TabLabel name="Products" focused={focused} />
+        }}
       />
       <Tab.Screen
         name="OrdersAdminTab"
         component={AdminOrdersScreen}
-        options={{ tabBarLabel: ({ focused }) => <TabLabel name="Orders" focused={focused} /> }}
+        options={{
+          ...buildTabScreenOptions('OrdersAdminTab'),
+          tabBarLabel: ({ focused }) => <TabLabel name="Orders" focused={focused} />
+        }}
       />
       <Tab.Screen
         name="AdminProfileTab"
         component={ProfileScreen}
-        options={{ tabBarLabel: ({ focused }) => <TabLabel name="Profile" focused={focused} /> }}
+        options={{
+          ...buildTabScreenOptions('AdminProfileTab'),
+          tabBarLabel: ({ focused }) => <TabLabel name="Profile" focused={focused} />
+        }}
       />
     </Tab.Navigator>
   );

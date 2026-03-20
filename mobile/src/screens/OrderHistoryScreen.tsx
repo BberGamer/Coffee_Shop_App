@@ -20,8 +20,10 @@ export default function OrderHistoryScreen() {
     try {
       setLoading(true);
       const response = await api.get('/orders/my');
-      setOrders(response.data.items);
+      const items = Array.isArray(response?.data?.items) ? response.data.items : [];
+      setOrders(items);
     } catch (error: any) {
+      setOrders([]);
       Alert.alert('Error', error?.response?.data?.message || 'Failed to load orders');
     } finally {
       setLoading(false);
@@ -47,13 +49,21 @@ export default function OrderHistoryScreen() {
         orders.map((order) => (
           <View key={order._id} style={styles.card}>
             <View style={styles.headerRow}>
-              <Text style={[styles.status, { backgroundColor: `${statusColorMap[order.status]}22`, color: statusColorMap[order.status] }]}>
-                {order.status.toUpperCase()}
+              <Text
+                style={[
+                  styles.status,
+                  {
+                    backgroundColor: `${statusColorMap[order.status] || colors.primary}22`,
+                    color: statusColorMap[order.status] || colors.primary
+                  }
+                ]}
+              >
+                {(order.status || 'pending').toUpperCase()}
               </Text>
-              <Text style={styles.amount}>${order.totalAmount.toFixed(2)}</Text>
+              <Text style={styles.amount}>${Number(order.totalAmount || 0).toFixed(2)}</Text>
             </View>
 
-            {order.items.map((item, index) => (
+            {(Array.isArray(order.items) ? order.items : []).map((item, index) => (
               <View key={`${order._id}-${index}`} style={styles.itemRow}>
                 <Text style={styles.itemName}>{item.name} x{item.quantity}</Text>
                 <Text style={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
@@ -63,11 +73,13 @@ export default function OrderHistoryScreen() {
             <View style={styles.line} />
             <View style={styles.itemRow}>
               <Text style={styles.metaText}>Payment</Text>
-              <Text style={styles.metaText}>{order.paymentMethod}</Text>
+              <Text style={styles.metaText}>{order.paymentMethod || '-'}</Text>
             </View>
             <View style={styles.itemRow}>
               <Text style={styles.metaText}>Created</Text>
-              <Text style={styles.metaText}>{new Date(order.createdAt).toLocaleString()}</Text>
+              <Text style={styles.metaText}>
+                {order.createdAt ? new Date(order.createdAt).toLocaleString() : '-'}
+              </Text>
             </View>
           </View>
         ))
