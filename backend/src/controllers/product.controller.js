@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const Order = require('../models/Order');
 
 const slugify = (value = '') =>
   value
@@ -164,6 +165,20 @@ const deleteProduct = async (req, res, next) => {
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    const isReferencedInOrders = await Order.exists({
+      'items.product': product._id
+    });
+
+    if (isReferencedInOrders) {
+      product.status = 'inactive';
+      await product.save();
+
+      return res.json({
+        message: 'Product exists in past orders, so it was archived instead of deleted.',
+        product
+      });
     }
 
     await product.deleteOne();

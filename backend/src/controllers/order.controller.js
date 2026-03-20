@@ -17,24 +17,34 @@ const createOrder = async (req, res, next) => {
       return res.status(400).json({ message: 'Payment method is required.' });
     }
 
-    const productIds = items.map((item) => item.product);
-    const dbProducts = await Product.find({ _id: { $in: productIds } });
+    const normalizedItems = [];
 
-    if (dbProducts.length !== items.length) {
-      return res.status(400).json({ message: 'Some products are invalid or not found.' });
-    }
+    for (const item of items) {
+      let product = null;
 
-    const normalizedItems = items.map((item) => {
-      const product = dbProducts.find((p) => p._id.toString() === item.product);
-      return {
+      if (item.product) {
+        product = await Product.findById(item.product);
+      }
+
+      if (!product && item.slug) {
+        product = await Product.findOne({ slug: item.slug });
+      }
+
+      if (!product) {
+        return res.status(400).json({
+          message: `Product "${item.name || item.slug || item.product || 'unknown'}" is invalid or not found.`
+        });
+      }
+
+      normalizedItems.push({
         product: product._id,
         name: product.name,
         image: product.image,
         price: product.price,
         size: item.size || 'M',
         quantity: Number(item.quantity || 1)
-      };
-    });
+      });
+    }
 
     const subtotal = normalizedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const shippingFee = subtotal >= 25 ? 0 : 5;

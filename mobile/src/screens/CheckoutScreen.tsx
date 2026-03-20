@@ -33,6 +33,8 @@ export default function CheckoutScreen({ navigation }: any) {
       await api.post('/orders', {
         items: items.map((item) => ({
           product: item.product._id,
+          slug: item.product.slug,
+          name: item.product.name,
           quantity: item.quantity,
           size: item.size
         })),
