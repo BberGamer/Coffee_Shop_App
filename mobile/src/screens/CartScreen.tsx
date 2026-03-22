@@ -32,13 +32,24 @@ export default function CartScreen({ navigation }: any) {
                 <Text style={styles.itemMeta}>Size: {item.size}</Text>
                 <Text style={styles.itemPrice}>${unitPrice.toFixed(2)}</Text>
                 <Text style={styles.itemMeta}>Line total: ${(unitPrice * item.quantity).toFixed(2)}</Text>
+                <Text style={[styles.itemMeta, item.product.stock === 0 ? styles.stockAlert : null]}>
+                  {item.product.stock > 0 ? `Available: ${item.product.stock}` : 'Out of stock'}
+                </Text>
 
                 <View style={styles.qtyRow}>
                   <Pressable style={styles.qtyButton} onPress={() => updateQuantity(item.product._id, item.size, item.quantity - 1)}>
                     <Text>-</Text>
                   </Pressable>
                   <Text style={styles.qtyValue}>{item.quantity}</Text>
-                  <Pressable style={styles.qtyButton} onPress={() => updateQuantity(item.product._id, item.size, item.quantity + 1)}>
+                  <Pressable
+                    style={styles.qtyButton}
+                    onPress={() => {
+                      const result = updateQuantity(item.product._id, item.size, item.quantity + 1);
+                      if (!result.ok) {
+                        Alert.alert('Notice', result.message || 'Quantity exceeds available stock');
+                      }
+                    }}
+                  >
                     <Text>+</Text>
                   </Pressable>
                 </View>
@@ -127,6 +138,9 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color: colors.primaryDark,
     fontWeight: '700'
+  },
+  stockAlert: {
+    color: colors.danger
   },
   qtyRow: {
     flexDirection: 'row',

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { colors } from '../theme/colors';
 
 export default function WelcomeScreen({ navigation }: any) {
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function WelcomeScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: '#0f1f24'
+    backgroundColor: colors.primaryDark
   },
   backgroundImage: {
     opacity: 0.96
@@ -43,20 +44,20 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingHorizontal: 28,
     paddingBottom: 54,
-    backgroundColor: 'rgba(6, 20, 26, 0.22)'
+    backgroundColor: 'rgba(33, 25, 21, 0.38)'
   },
   brandWrap: {
     alignItems: 'center'
   },
   brand: {
-    color: '#ffffff',
+    color: colors.white,
     fontSize: 34,
     fontWeight: '800',
     letterSpacing: 1.5
   },
   caption: {
     marginTop: 10,
-    color: 'rgba(255,255,255,0.84)',
+    color: '#DBC5B9',
     fontSize: 15
   }
 });

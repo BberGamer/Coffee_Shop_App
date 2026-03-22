@@ -7,10 +7,10 @@ import { Order } from '../types';
 import { colors } from '../theme/colors';
 
 const statusColorMap: Record<string, string> = {
-  pending: '#e6ad00',
-  preparing: '#c67a49',
-  delivered: '#3ea76a',
-  cancelled: '#d65a5a'
+  pending: '#BD9C89',
+  preparing: '#69564B',
+  delivered: '#43362F',
+  cancelled: '#927869'
 };
 
 export default function OrderHistoryScreen() {
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   emptyCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 18,
     padding: 18
   },
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     color: colors.textSoft
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 22,
     padding: 18,
     marginBottom: 14

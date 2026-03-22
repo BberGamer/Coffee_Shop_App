@@ -65,6 +65,10 @@ const orderSchema = new mongoose.Schema(
       enum: ['pending', 'preparing', 'delivered', 'cancelled'],
       default: 'pending'
     },
+    inventoryAdjusted: {
+      type: Boolean,
+      default: false
+    },
     subtotal: {
       type: Number,
       required: true

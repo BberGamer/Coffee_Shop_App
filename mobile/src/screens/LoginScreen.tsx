@@ -28,7 +28,7 @@ export default function LoginScreen({ navigation }: any) {
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
         <Pressable style={styles.backButton} onPress={() => navigation.navigate('Onboarding')}>
-          <Ionicons name="chevron-back" size={18} color="#3a4758" />
+          <Ionicons name="chevron-back" size={18} color={colors.primaryDark} />
         </Pressable>
 
         <View style={styles.header}>
@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation }: any) {
             value={email}
             onChangeText={setEmail}
             placeholder="Enter your email"
-            placeholderTextColor="#9aa6b2"
+            placeholderTextColor={colors.textSoft}
             style={styles.input}
             autoCapitalize="none"
             keyboardType="email-address"
@@ -54,7 +54,7 @@ export default function LoginScreen({ navigation }: any) {
               value={password}
               onChangeText={setPassword}
               placeholder="Enter your password"
-              placeholderTextColor="#9aa6b2"
+              placeholderTextColor={colors.textSoft}
               style={styles.passwordInput}
               secureTextEntry={!showPassword}
             />
@@ -62,7 +62,7 @@ export default function LoginScreen({ navigation }: any) {
               <Ionicons
                 name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                 size={20}
-                color="#95a0ad"
+                color={colors.textSoft}
               />
             </Pressable>
           </View>
@@ -74,7 +74,7 @@ export default function LoginScreen({ navigation }: any) {
           <PrimaryButton title="Sign In" onPress={onLogin} loading={loading} />
 
           <View style={styles.secondaryButton}>
-            <Ionicons name="logo-google" size={18} color="#4285F4" />
+            <Ionicons name="logo-google" size={18} color={colors.primary} />
             <Text style={styles.secondaryText}>Sign in with Google</Text>
           </View>
         </View>
@@ -104,10 +104,10 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#8ba0b7',
+    shadowColor: colors.shadow,
     shadowOpacity: 0.12,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
@@ -120,11 +120,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 34,
     fontWeight: '800',
-    color: '#243142'
+    color: colors.text
   },
   subtitle: {
     marginTop: 10,
-    color: '#8b97a5',
+    color: colors.textSoft,
     textAlign: 'center',
     lineHeight: 22,
     maxWidth: 280
@@ -135,17 +135,17 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#2d3a4b',
+    color: colors.primaryDark,
     marginBottom: 10
   },
   input: {
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
     borderRadius: 18,
     paddingHorizontal: 18,
     paddingVertical: 16,
-    color: '#243142',
+    color: colors.text,
     marginBottom: 22,
-    shadowColor: '#95a7ba',
+    shadowColor: colors.shadow,
     shadowOpacity: 0.08,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 6 },
@@ -154,11 +154,11 @@ const styles = StyleSheet.create({
   passwordWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
     borderRadius: 18,
     paddingHorizontal: 18,
     marginBottom: 10,
-    shadowColor: '#95a7ba',
+    shadowColor: colors.shadow,
     shadowOpacity: 0.08,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 6 },
@@ -167,19 +167,19 @@ const styles = StyleSheet.create({
   passwordInput: {
     flex: 1,
     paddingVertical: 16,
-    color: '#243142'
+    color: colors.text
   },
   recoveryWrap: {
     alignSelf: 'flex-end',
     marginBottom: 26
   },
   recoveryText: {
-    color: '#97a3b1',
+    color: colors.textSoft,
     fontSize: 12
   },
   secondaryButton: {
     marginTop: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.white,
     borderRadius: 18,
     paddingVertical: 16,
     alignItems: 'center',
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     gap: 10
   },
   secondaryText: {
-    color: '#243142',
+    color: colors.text,
     fontWeight: '600'
   },
   footer: {
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   footerText: {
-    color: '#8f9aa7'
+    color: colors.textSoft
   },
   footerLink: {
     color: colors.primary,

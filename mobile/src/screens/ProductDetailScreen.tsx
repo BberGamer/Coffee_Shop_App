@@ -18,7 +18,7 @@ import { getSizePrice, getSizePriceLabel } from '../utils/pricing';
 
 export default function ProductDetailScreen({ route, navigation }: any) {
   const { productId } = route.params;
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState('M');
@@ -52,6 +52,12 @@ export default function ProductDetailScreen({ route, navigation }: any) {
 
   const selectedPrice = getSizePrice(product.price, selectedSize);
   const totalPrice = selectedPrice * quantity;
+  const quantityInCart = items.reduce(
+    (sum, item) => (item.product._id === product._id ? sum + item.quantity : sum),
+    0
+  );
+  const remainingCapacity = Math.max(product.stock - quantityInCart, 0);
+  const isOutOfStock = product.stock <= 0;
 
   return (
     <ScreenContainer>
@@ -69,6 +75,12 @@ export default function ProductDetailScreen({ route, navigation }: any) {
 
       <Text style={styles.sectionLabel}>Description</Text>
       <Text style={styles.description}>{product.description}</Text>
+      <Text style={[styles.stockText, isOutOfStock ? styles.stockEmpty : null]}>
+        {isOutOfStock ? 'Out of stock' : `Available now: ${product.stock}`}
+      </Text>
+      {quantityInCart > 0 ? (
+        <Text style={styles.stockHint}>Already in cart: {quantityInCart}</Text>
+      ) : null}
 
       <Text style={styles.sectionLabel}>Size</Text>
       <View style={styles.inlineRow}>
@@ -91,18 +103,34 @@ export default function ProductDetailScreen({ route, navigation }: any) {
           <Text style={styles.qtyText}>-</Text>
         </Pressable>
         <Text style={styles.qtyValue}>{quantity}</Text>
-        <Pressable style={styles.qtyButton} onPress={() => setQuantity((q) => q + 1)}>
+        <Pressable
+          style={[styles.qtyButton, remainingCapacity <= quantity ? styles.qtyButtonDisabled : null]}
+          onPress={() => {
+            if (remainingCapacity <= quantity) {
+              Alert.alert('Notice', `Only ${product.stock} item(s) are available right now.`);
+              return;
+            }
+
+            setQuantity((q) => q + 1);
+          }}
+        >
           <Text style={styles.qtyText}>+</Text>
         </Pressable>
       </View>
 
       <PrimaryButton
-        title={`Add to Cart - $${totalPrice.toFixed(2)}`}
+        title={isOutOfStock ? 'Out of Stock' : `Add to Cart - $${totalPrice.toFixed(2)}`}
         onPress={() => {
-          addToCart(product, quantity, selectedSize);
+          const result = addToCart(product, quantity, selectedSize);
+          if (!result.ok) {
+            Alert.alert('Notice', result.message || 'Quantity exceeds available stock');
+            return;
+          }
+
           Alert.alert('Success', 'Added to cart');
           navigation.navigate('CustomerTabs', { screen: 'CartTab' });
         }}
+        disabled={isOutOfStock}
       />
     </ScreenContainer>
   );
@@ -158,6 +186,18 @@ const styles = StyleSheet.create({
     color: colors.textSoft,
     lineHeight: 22
   },
+  stockText: {
+    marginTop: 10,
+    color: colors.primaryDark,
+    fontWeight: '700'
+  },
+  stockHint: {
+    marginTop: 4,
+    color: colors.textSoft
+  },
+  stockEmpty: {
+    color: colors.danger
+  },
   inlineRow: {
     flexDirection: 'row',
     gap: 12
@@ -195,6 +235,9 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  qtyButtonDisabled: {
+    opacity: 0.45
   },
   qtyText: {
     fontSize: 22,

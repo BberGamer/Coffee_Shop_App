@@ -28,6 +28,29 @@ export default function CheckoutScreen({ navigation }: any) {
 
   const confirmOrder = async () => {
     try {
+      const quantityByProduct = new Map<string, { name: string; stock: number; quantity: number }>();
+
+      for (const item of items) {
+        const current = quantityByProduct.get(item.product._id) || {
+          name: item.product.name,
+          stock: item.product.stock,
+          quantity: 0
+        };
+
+        current.quantity += item.quantity;
+        quantityByProduct.set(item.product._id, current);
+      }
+
+      for (const product of quantityByProduct.values()) {
+        if (product.quantity > product.stock) {
+          Alert.alert(
+            'Notice',
+            `You ordered too many "${product.name}". Only ${product.stock} item(s) are available.`
+          );
+          return;
+        }
+      }
+
       setLoading(true);
 
       await api.post('/orders', {
@@ -84,6 +107,16 @@ export default function CheckoutScreen({ navigation }: any) {
 
       <View style={styles.summary}>
         <Text style={styles.summaryTitle}>Order Summary</Text>
+        {items.map((item) => (
+          <View key={`${item.product._id}-${item.size}`} style={styles.summaryRow}>
+            <Text style={styles.itemSummaryText}>
+              {item.product.name} x{item.quantity}
+            </Text>
+            <Text style={[styles.itemSummaryStock, item.product.stock === 0 ? styles.stockAlert : null]}>
+              Stock: {item.product.stock}
+            </Text>
+          </View>
+        ))}
         <View style={styles.summaryRow}>
           <Text>Subtotal</Text>
           <Text>${subtotal.toFixed(2)}</Text>
@@ -152,6 +185,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10
+  },
+  itemSummaryText: {
+    color: colors.textSoft
+  },
+  itemSummaryStock: {
+    color: colors.primaryDark,
+    fontWeight: '600'
+  },
+  stockAlert: {
+    color: colors.danger
   },
   totalText: {
     fontWeight: '800',

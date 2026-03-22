@@ -29,6 +29,11 @@ export type CartItem = {
   size: string;
 };
 
+export type CartActionResult = {
+  ok: boolean;
+  message?: string;
+};
+
 export type Order = {
   _id: string;
   user?: {

@@ -6,13 +6,18 @@ type Props = {
   title: string;
   onPress: () => void;
   loading?: boolean;
+  disabled?: boolean;
 };
 
-export default function PrimaryButton({ title, onPress, loading = false }: Props) {
+export default function PrimaryButton({ title, onPress, loading = false, disabled = false }: Props) {
   return (
-    <Pressable style={styles.button} onPress={onPress} disabled={loading}>
+    <Pressable
+      style={[styles.button, disabled ? styles.buttonDisabled : null]}
+      onPress={onPress}
+      disabled={loading || disabled}
+    >
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={colors.white} />
       ) : (
         <Text style={styles.text}>{title}</Text>
       )}
@@ -33,8 +38,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     elevation: 2
   },
+  buttonDisabled: {
+    opacity: 0.55
+  },
   text: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '700',
     fontSize: 16
   }

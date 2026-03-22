@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     width: 220,
     height: 220,
     borderRadius: 110,
-    backgroundColor: '#e8f1fb'
+    backgroundColor: '#DBC5B9'
   },
   backgroundOrbSmall: {
     position: 'absolute',
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#f8fbff'
+    backgroundColor: '#F5F0ED'
   },
   dotTopLeft: {
     position: 'absolute',
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#8ec2ff'
+    backgroundColor: '#BD9C89'
   },
   dotCenterRight: {
     position: 'absolute',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#5ca2ef'
+    backgroundColor: '#927869'
   },
   dotBottomRight: {
     position: 'absolute',
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#8ec2ff'
+    backgroundColor: '#BD9C89'
   },
   imageWrap: {
     marginTop: 38,
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 78,
     fontWeight: '800',
     letterSpacing: 6,
-    color: '#edf1f6'
+    color: '#DBC5B9'
   },
   image: {
     width: '100%',
@@ -164,11 +164,11 @@ const styles = StyleSheet.create({
     fontSize: 38,
     lineHeight: 46,
     fontWeight: '800',
-    color: '#243142'
+    color: colors.text
   },
   description: {
     marginTop: 14,
-    color: '#7d8998',
+    color: colors.textSoft,
     fontSize: 17,
     lineHeight: 28,
     maxWidth: 320
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#d8dee6',
+    backgroundColor: '#BD9C89',
     marginRight: 8
   },
   paginationDotActive: {
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   buttonText: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 16,
     fontWeight: '700'
   }

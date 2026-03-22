@@ -19,6 +19,9 @@ export default function ProductCard({ product, onPress }: Props) {
         {product.name}
       </Text>
       <Text style={styles.category}>{product.category}</Text>
+      <Text style={[styles.stock, product.stock === 0 ? styles.stockEmpty : null]}>
+        {product.stock > 0 ? `In stock: ${product.stock}` : 'Out of stock'}
+      </Text>
       <View style={styles.footer}>
         <Text style={styles.price}>${product.price.toFixed(2)}</Text>
         <View style={styles.badge}>
@@ -32,7 +35,7 @@ export default function ProductCard({ product, onPress }: Props) {
 const styles = StyleSheet.create({
   card: {
     width: 168,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 20,
     padding: 12,
     marginRight: 12,
@@ -54,6 +57,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color: colors.textSoft
   },
+  stock: {
+    marginTop: 4,
+    color: colors.primaryDark,
+    fontWeight: '600'
+  },
+  stockEmpty: {
+    color: colors.danger
+  },
   footer: {
     marginTop: 10,
     flexDirection: 'row',
@@ -74,7 +85,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   badgeText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '800',
     fontSize: 18
   }

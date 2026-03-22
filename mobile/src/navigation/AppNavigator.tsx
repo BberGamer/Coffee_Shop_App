@@ -49,7 +49,7 @@ function buildTabScreenOptions(routeName: keyof typeof tabIcons) {
     tabBarActiveTintColor: colors.primary,
     tabBarInactiveTintColor: colors.textSoft,
     tabBarStyle: {
-      backgroundColor: '#fff',
+      backgroundColor: colors.white,
       borderTopColor: colors.border,
       height: 64
     },

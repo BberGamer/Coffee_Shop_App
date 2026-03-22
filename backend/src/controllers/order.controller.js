@@ -2,6 +2,46 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const { getSizePrice } = require('../utils/pricing');
 
+const STOCK_DEDUCT_STATUSES = new Set(['preparing', 'delivered']);
+
+const buildOrderQuantityMap = (items = []) =>
+  items.reduce((acc, item) => {
+    const productId = item.product.toString();
+    acc.set(productId, (acc.get(productId) || 0) + Number(item.quantity || 0));
+    return acc;
+  }, new Map());
+
+const syncOrderInventory = async (order, shouldDeduct) => {
+  const quantityMap = buildOrderQuantityMap(order.items);
+  const productIds = Array.from(quantityMap.keys());
+  const products = await Product.find({ _id: { $in: productIds } });
+  const productMap = new Map(products.map((product) => [product._id.toString(), product]));
+
+  for (const [productId, quantity] of quantityMap.entries()) {
+    const product = productMap.get(productId);
+
+    if (!product) {
+      const error = new Error('One or more ordered products no longer exist.');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (shouldDeduct && product.stock < quantity) {
+      const error = new Error(
+        `"${product.name}" only has ${product.stock} item(s) remaining, but this order needs ${quantity}.`
+      );
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
+  for (const [productId, quantity] of quantityMap.entries()) {
+    const product = productMap.get(productId);
+    product.stock += shouldDeduct ? -quantity : quantity;
+    await product.save();
+  }
+};
+
 const createOrder = async (req, res, next) => {
   try {
     const { items, shippingAddress, paymentMethod, note } = req.body;
@@ -19,6 +59,7 @@ const createOrder = async (req, res, next) => {
     }
 
     const normalizedItems = [];
+    const requestedQuantityMap = new Map();
 
     for (const item of items) {
       let product = null;
@@ -37,13 +78,36 @@ const createOrder = async (req, res, next) => {
         });
       }
 
+      if (product.status !== 'active') {
+        return res.status(400).json({
+          message: `Product "${product.name}" is currently unavailable.`
+        });
+      }
+
+      const quantity = Number(item.quantity || 1);
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        return res.status(400).json({
+          message: `Quantity for "${product.name}" must be at least 1.`
+        });
+      }
+
+      const productId = product._id.toString();
+      const totalRequested = (requestedQuantityMap.get(productId) || 0) + quantity;
+      requestedQuantityMap.set(productId, totalRequested);
+
+      if (totalRequested > product.stock) {
+        return res.status(400).json({
+          message: `You ordered too many "${product.name}". Only ${product.stock} item(s) are currently available.`
+        });
+      }
+
       normalizedItems.push({
         product: product._id,
         name: product.name,
         image: product.image,
         price: getSizePrice(product.price, item.size || 'S'),
         size: item.size || 'S',
-        quantity: Number(item.quantity || 1)
+        quantity
       });
     }
 
@@ -58,6 +122,7 @@ const createOrder = async (req, res, next) => {
       paymentMethod,
       paymentStatus: paymentMethod === 'cod' ? 'pending' : 'paid',
       status: 'pending',
+      inventoryAdjusted: false,
       subtotal,
       shippingFee,
       totalAmount,
@@ -133,6 +198,25 @@ const updateOrderStatus = async (req, res, next) => {
     const order = await Order.findById(req.params.id);
     if (!order) {
       return res.status(404).json({ message: 'Order not found.' });
+    }
+
+    const nextShouldDeduct = STOCK_DEDUCT_STATUSES.has(status);
+
+    if (status === order.status) {
+      return res.json({
+        message: 'Order status updated successfully',
+        order
+      });
+    }
+
+    if (nextShouldDeduct && !order.inventoryAdjusted) {
+      await syncOrderInventory(order, true);
+      order.inventoryAdjusted = true;
+    }
+
+    if (!nextShouldDeduct && order.inventoryAdjusted) {
+      await syncOrderInventory(order, false);
+      order.inventoryAdjusted = false;
     }
 
     order.status = status;

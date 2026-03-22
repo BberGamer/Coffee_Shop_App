@@ -47,7 +47,6 @@ export default function AdminDashboardScreen() {
       </View>
     );
   }
-
   return (
     <ScreenContainer>
       <Text style={styles.title}>Admin Dashboard</Text>
@@ -111,9 +110,11 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '47%',
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     padding: 18,
-    borderRadius: 20
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: colors.border
   },
   cardLabel: {
     color: colors.textSoft
@@ -132,10 +133,12 @@ const styles = StyleSheet.create({
     color: colors.text
   },
   orderCard: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 18,
     padding: 16,
-    marginBottom: 12
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.border
   },
   orderName: {
     color: colors.text,
