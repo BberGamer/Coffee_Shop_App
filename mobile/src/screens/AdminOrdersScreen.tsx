@@ -9,6 +9,7 @@ const statuses: Array<Order['status']> = ['pending', 'preparing', 'delivered', '
 
 export default function AdminOrdersScreen() {
   const [orders, setOrders] = useState<Order[]>([]);
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
   const loadOrders = async () => {
     try {
@@ -42,10 +43,51 @@ export default function AdminOrdersScreen() {
 
       {orders.map((order) => (
         <View key={order._id} style={styles.card}>
-          <Text style={styles.customer}>{order.user?.name || 'Unknown user'}</Text>
-          <Text style={styles.meta}>{order.user?.email || '-'}</Text>
-          <Text style={styles.meta}>Total: ${order.totalAmount.toFixed(2)}</Text>
-          <Text style={styles.meta}>Current status: {order.status}</Text>
+          <Pressable
+            onPress={() =>
+              setExpandedOrderId((current) => (current === order._id ? null : order._id))
+            }
+          >
+            <View style={styles.headerRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.customer}>{order.user?.name || 'Unknown user'}</Text>
+                <Text style={styles.meta}>{order.user?.email || '-'}</Text>
+                <Text style={styles.meta}>Total: ${order.totalAmount.toFixed(2)}</Text>
+                <Text style={styles.meta}>Current status: {order.status}</Text>
+              </View>
+              <Text style={styles.toggleText}>
+                {expandedOrderId === order._id ? 'Hide details' : 'View details'}
+              </Text>
+            </View>
+          </Pressable>
+
+          {expandedOrderId === order._id ? (
+            <View style={styles.detailWrap}>
+              <Text style={styles.detailTitle}>Ordered Items</Text>
+              {(Array.isArray(order.items) ? order.items : []).map((item, index) => (
+                <View key={`${order._id}-${index}`} style={styles.itemRow}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemMeta}>Size: {item.size}</Text>
+                    <Text style={styles.itemMeta}>Quantity: {item.quantity}</Text>
+                  </View>
+                  <Text style={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
+                </View>
+              ))}
+
+              <View style={styles.divider} />
+              <Text style={styles.detailTitle}>Delivery Info</Text>
+              <Text style={styles.itemMeta}>{order.shippingAddress.fullName}</Text>
+              <Text style={styles.itemMeta}>{order.shippingAddress.phone}</Text>
+              <Text style={styles.itemMeta}>
+                {order.shippingAddress.street}, {order.shippingAddress.city}
+              </Text>
+              {order.shippingAddress.zipCode ? (
+                <Text style={styles.itemMeta}>Zip code: {order.shippingAddress.zipCode}</Text>
+              ) : null}
+              <Text style={styles.itemMeta}>Payment: {order.paymentMethod}</Text>
+            </View>
+          ) : null}
 
           <View style={styles.statusWrap}>
             {statuses.map((status) => (
@@ -86,19 +128,64 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     borderRadius: 20,
     padding: 16,
-    marginBottom: 12
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.border
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12
   },
   customer: {
     color: colors.text,
     fontWeight: '700',
     fontSize: 16
   },
+  toggleText: {
+    color: colors.primaryDark,
+    fontWeight: '700'
+  },
   meta: {
     color: colors.textSoft,
     marginTop: 4
+  },
+  detailWrap: {
+    marginTop: 14,
+    paddingTop: 14,
+    borderTopWidth: 1,
+    borderTopColor: colors.border
+  },
+  detailTitle: {
+    color: colors.text,
+    fontWeight: '800',
+    marginBottom: 10
+  },
+  itemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginBottom: 10
+  },
+  itemName: {
+    color: colors.text,
+    fontWeight: '700'
+  },
+  itemMeta: {
+    color: colors.textSoft,
+    marginTop: 3
+  },
+  itemPrice: {
+    color: colors.primaryDark,
+    fontWeight: '700'
+  },
+  divider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: 12
   },
   statusWrap: {
     flexDirection: 'row',
