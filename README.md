@@ -1,35 +1,37 @@
-# Moon Coffee - Fullstack React Native Project
+# Moon Coffee
 
-## 1) Kiến trúc dự án
+Moon Coffee la du an fullstack mo phong quy trinh van hanh cua mot ung dung ban ca phe tren mobile, bao gom ung dung React Native cho nguoi dung va trang quan tri, cung backend REST API su dung Express va MongoDB.
 
-```text
-moon-coffee-project/
-├── backend/         # REST API với Express + MongoDB + JWT
-├── mobile/          # Ứng dụng React Native (Expo + TypeScript)
-├── docs/            # Tài liệu phân tích, schema DB, API, luồng màn hình
-└── README.md
-```
+Tai lieu nay duoc viet lai theo huong ngan gon, ro rang va phu hop de demo, ban giao hoac tiep tuc phat trien.
 
-## 2) Tính năng chính
+## Tong quan
 
-### User
-- Welcome / Login / Sign up
-- Xem danh sách coffee
-- Xem chi tiết sản phẩm
-- Thêm vào giỏ hàng
-- Checkout
-- Xem lịch sử đơn hàng
-- Xem hồ sơ cá nhân
+- `mobile/`: ung dung React Native su dung Expo va TypeScript
+- `backend/`: REST API su dung Node.js, Express va MongoDB
+- `docs/`: tai lieu phan tich, schema va mo ta nghiep vu
 
-### Admin
-- Đăng nhập bằng tài khoản admin
-- Xem dashboard thống kê
-- Thêm / sửa / xoá sản phẩm
-- Quản lý trạng thái đơn hàng
+## Pham vi chuc nang
 
-## 3) Công nghệ
+### Nguoi dung
+
+- Dang ky, dang nhap va quan ly thong tin ca nhan
+- Xem danh sach san pham va chi tiet tung mon
+- Tim kiem san pham
+- Them san pham vao gio hang
+- Dat hang va theo doi lich su don hang
+
+### Quan tri vien
+
+- Dang nhap bang tai khoan admin
+- Xem dashboard thong ke
+- Them, cap nhat va xoa san pham
+- Quan ly danh sach don hang
+- Cap nhat trang thai don hang
+
+## Cong nghe su dung
 
 ### Mobile
+
 - Expo
 - React Native
 - TypeScript
@@ -38,43 +40,53 @@ moon-coffee-project/
 - AsyncStorage
 
 ### Backend
+
 - Node.js
 - Express
-- MongoDB + Mongoose
+- MongoDB
+- Mongoose
 - JWT
 - bcryptjs
 
-## 4) Tài khoản mặc định sau khi seed
+## Cau truc du an
 
-### Admin
-- Email: `admin@mooncoffee.vn`
-- Password: `123456`
+```text
+moon-coffee-project/
+|-- backend/
+|   |-- src/
+|   |   |-- config/
+|   |   |-- controllers/
+|   |   |-- data/
+|   |   |-- middleware/
+|   |   |-- models/
+|   |   |-- routes/
+|   |   |-- scripts/
+|   |   `-- utils/
+|   `-- package.json
+|-- mobile/
+|   |-- src/
+|   |   |-- components/
+|   |   |-- context/
+|   |   |-- navigation/
+|   |   |-- screens/
+|   |   |-- services/
+|   |   |-- theme/
+|   |   `-- types/
+|   `-- package.json
+|-- docs/
+`-- README.md
+```
 
-## 5) Chạy backend
+## Cai dat va khoi dong
+
+### 1. Chay backend
 
 ```bash
 cd backend
-cp .env.example .env
 npm install
-npm run seed
-npm run dev
 ```
 
-## 6) Chạy mobile
-
-```bash
-cd mobile
-cp .env.example .env
-npm install
-npx expo start
-```
-
-> Trong file `.env` của mobile, sửa `EXPO_PUBLIC_API_URL` thành IP máy đang chạy backend.
-> Ví dụ: `http://192.168.1.10:5000/api`
-
-## 7) Chạy nhanh với MongoDB local
-
-Cấu hình trong `backend/.env`:
+Tao file `.env` trong thu muc `backend/` voi noi dung tham khao:
 
 ```env
 PORT=5000
@@ -83,42 +95,99 @@ JWT_SECRET=super-secret-key
 JWT_EXPIRES_IN=7d
 ```
 
-## 8) API chính
+Khoi tao du lieu mau:
+
+```bash
+npm run seed
+```
+
+Chay server development:
+
+```bash
+npm run dev
+```
+
+Sau khi khoi tao du lieu, tai khoan admin mac dinh:
+
+- Email: `admin@mooncoffee.vn`
+- Password: `123456`
+
+### 2. Chay mobile app
+
+```bash
+cd mobile
+npm install
+```
+
+Tao file `.env` trong thu muc `mobile/`:
+
+```env
+EXPO_PUBLIC_API_URL=http://YOUR_LOCAL_IP:5000/api
+```
+
+Vi du:
+
+```env
+EXPO_PUBLIC_API_URL=http://192.168.1.10:5000/api
+```
+
+Khoi dong ung dung:
+
+```bash
+npx expo start
+```
+
+Neu test bang thiet bi that, hay dam bao dien thoai va may tinh cung mang noi bo.
+
+## API chinh
+
+### Xac thuc
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `GET /api/auth/me`
+- `PUT /api/auth/me`
+
+### San pham
+
 - `GET /api/products`
 - `GET /api/products/:id`
-- `POST /api/products` (admin)
-- `PUT /api/products/:id` (admin)
-- `DELETE /api/products/:id` (admin)
+- `POST /api/products`
+- `PUT /api/products/:id`
+- `DELETE /api/products/:id`
+
+### Don hang
+
 - `POST /api/orders`
 - `GET /api/orders/my`
-- `GET /api/orders` (admin)
-- `PATCH /api/orders/:id/status` (admin)
-- `GET /api/dashboard/stats` (admin)
+- `GET /api/orders`
+- `PATCH /api/orders/:id/status`
 
-## 9) Gợi ý demo cho bài bảo vệ
+### Dashboard
 
-1. Đăng ký user mới
-2. Xem menu coffee
-3. Thêm sản phẩm vào cart
-4. Checkout
-5. Đăng xuất
-6. Đăng nhập admin
-7. Thêm sản phẩm mới
-8. Đổi trạng thái đơn hàng
-9. Mở MongoDB/Compass để chứng minh dữ liệu từ database
+- `GET /api/dashboard/stats`
 
-## 10) Ghi chú
+## Quy trinh demo de xuat
 
-- Dự án này được dựng theo đúng hướng fullstack để bạn tiếp tục phát triển thêm.
-- Mình đã ưu tiên kiến trúc rõ ràng, dễ học và dễ thuyết trình.
-- Bạn có thể nâng cấp thêm:
-  - Thanh toán mô phỏng VNPay / MoMo
-  - Tìm kiếm nâng cao
-  - Chat
-  - Mã giảm giá
-  - Upload ảnh sản phẩm thật
-  - Push notification
+1. Dang ky hoac dang nhap tai khoan nguoi dung
+2. Xem danh sach san pham va tim kiem mon
+3. Them san pham vao gio hang
+4. Dat hang
+5. Kiem tra lich su don hang
+6. Dang nhap bang tai khoan admin
+7. Quan ly san pham va cap nhat trang thai don hang
+8. Mo dashboard de theo doi so lieu tong quan
+
+## Dinh huong mo rong
+
+- Tich hop thanh toan truc tuyen
+- Bo sung danh muc, voucher va chuong trinh khuyen mai
+- Ho tro upload hinh anh san pham
+- Them thong bao day va cap nhat don hang theo thoi gian thuc
+- Bo sung bo loc va tim kiem nang cao
+
+## Luu y
+
+- Du an phu hop cho muc dich hoc tap, demo do an va phat trien tiep theo huong thuong mai
+- Truoc khi demo tren thiet bi that, can kiem tra lai gia tri `EXPO_PUBLIC_API_URL`
+- Lenh `npm run seed` se tao lai du lieu mau lien quan den san pham va tai khoan admin
